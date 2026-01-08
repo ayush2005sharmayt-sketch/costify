@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Costify</title>
+</head>
+<body>
+  <h2>Costify – Simple Price Tracker</h2>
+
+  <input id="url" placeholder="Paste product URL" size="60"/>
+  <button onclick="track()">Track</button>
+  <button onclick="refreshPrice()">Refresh Price</button>
+
+  <h3>Status</h3>
+  <div id="output"></div>
+
+  <h3>Price History</h3>
+  <ul id="history"></ul>
+
+  <script>
+    let currentUrl = "";
+
+    async function track() {
+      currentUrl = document.getElementById("url").value;
+      await callAPI();
+    }
+
+    async function refreshPrice() {
+      if (!currentUrl) {
+        alert("Pehle product track karo");
+        return;
+      }
+      await callAPI();
+    }
+
+    async function callAPI() {
+      const res = await fetch("https://costify.onrender.com/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: currentUrl })
+      });
+
+      const data = await res.json();
+      document.getElementById("output").innerText =
+        data.message + " | Price: ₹" + data.price;
+
+      loadHistory();
+    }
+
+    async function loadHistory() {
+      const res = await fetch(
+        "https://costify.onrender.com/history?url=" +
+        encodeURIComponent(currentUrl)
+      );
+
+      const data = await res.json();
+      const list = document.getElementById("history");
+      list.innerHTML = "";
+
+      data.forEach(item => {
+        const li = document.createElement("li");
+        li.innerText =
+          "₹" + item.price + " | " +
+          new Date(item.date).toLocaleString();
+        list.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
