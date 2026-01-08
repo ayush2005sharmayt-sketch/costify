@@ -1,15 +1,20 @@
-app.post("/track", async (req, res) => {
-  const { url } = req.body;
+const express = require("express");
+const app = express();
 
-  if (!url) {
-    return res.json({ message: "URL missing", price: null });
-  }
+app.use(express.json());
 
-  // DEMO PRICE LOGIC (working)
-  const fakePrice = Math.floor(Math.random() * 500) + 100;
-
+app.post("/track", (req, res) => {
   res.json({
     message: "Price fetched successfully",
-    price: fakePrice
+    price: 299
   });
+});
+
+app.get("/", (req, res) => {
+  res.send("Costify backend running");
+});
+
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log("Server running on port " + PORT);
 });
