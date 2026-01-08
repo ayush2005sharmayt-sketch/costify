@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -12,27 +13,28 @@ app.get("/", (req, res) => {
 });
 
 app.post("/track", (req, res) => {
-  const { url } = req.body;
+  try {
+    const { url } = req.body;
 
-  if (!url) {
-    return res.json({
-      message: "URL missing",
-      price: null
+    if (!url) {
+      return res.json({ message: "URL missing", price: null });
+    }
+
+    const price = Math.floor(Math.random() * 5000) + 500;
+
+    if (!history[url]) history[url] = [];
+    history[url].push({
+      price,
+      date: new Date()
     });
+
+    res.json({
+      message: "Price tracked successfully (demo)",
+      price
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
   }
-
-  const price = Math.floor(Math.random() * 5000) + 500;
-
-  if (!history[url]) history[url] = [];
-  history[url].push({
-    price,
-    date: new Date()
-  });
-
-  res.json({
-    message: "Price tracked successfully (demo)",
-    price
-  });
 });
 
 app.get("/history", (req, res) => {
