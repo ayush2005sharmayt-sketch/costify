@@ -1,38 +1,15 @@
-const express = require("express");
-const axios = require("axios");
-const cors = require("cors");
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(cors());
-app.use(express.json());
-
-// Simple health check
-app.get("/", (req, res) => {
-  res.json({ status: "Costify backend is running" });
-});
-
-// Dummy price fetch endpoint (learning purpose)
 app.post("/track", async (req, res) => {
   const { url } = req.body;
 
   if (!url) {
-    return res.status(400).json({ error: "Product URL is required" });
+    return res.json({ message: "URL missing", price: null });
   }
 
-  // ⚠️ Learning project: real scraping nahi kar rahe
-  // Static demo response
-  const fakePrice = Math.floor(Math.random() * 5000) + 1000;
+  // DEMO PRICE LOGIC (working)
+  const fakePrice = Math.floor(Math.random() * 500) + 100;
 
   res.json({
-    productUrl: url,
-    currentPrice: fakePrice,
-    currency: "INR",
-    fetchedAt: new Date().toISOString()
+    message: "Price fetched successfully",
+    price: fakePrice
   });
-});
-
-app.listen(PORT, () => {
-  console.log(`Costify backend running on port ${PORT}`);
 });
