@@ -1,20 +1,18 @@
-const express = require("express");
-const app = express();
-
-app.use(express.json());
-
 app.post("/track", (req, res) => {
+  const { url } = req.body;
+
+  if (!url) {
+    return res.json({
+      message: "URL missing",
+      price: null
+    });
+  }
+
+  // DEMO price (random)
+  const price = Math.floor(Math.random() * 5000) + 500;
+
   res.json({
-    message: "Price fetched successfully",
-    price: 299
+    message: "Price tracked successfully (demo)",
+    price
   });
-});
-
-app.get("/", (req, res) => {
-  res.send("Costify backend running");
-});
-
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
 });
